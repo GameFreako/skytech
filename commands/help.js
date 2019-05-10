@@ -8,7 +8,13 @@ exports.run = function(client, msg, args, db, RichEmbed) { // 🗑 UNICODE DELET
     var i;
     for (i=0;i<files.length;i++) {
       var command = require(`../commands/${files[i]}`).info
-      embed.addField(command.usage, command.description, false)
+      if (command) {
+        var usage = command.usage
+        var description = command.description
+      }
+      if (!usage) usage = "${files[i]}"
+      if (!description) description = "undefined"
+      embed.addField(usage, description, false)
     }
     await msg.channel.send(embed);
      msg.channel.fetchMessages(1).then(lastmsg => {

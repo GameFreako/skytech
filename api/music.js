@@ -25,7 +25,7 @@ async function resumePlay(msg, channel, data, loop, client, db, youtube) {
   const music = require('../api/music.js')
   const ytdl = require('ytdl-core');
   var id = data.split(';;')[0]
-  var title = data.split(';;')[1]
+  var title = data.split(';;')[1].replace(/&quot;/g, '')
   var description = data.split(';;')[2]
   var thumbnail = data.split(';;')[3]
   var CHID = data.split(`;;`)[4]
@@ -59,14 +59,14 @@ async function resumePlay(msg, channel, data, loop, client, db, youtube) {
           var lastDispatch = vc.playArbitraryInput(`https://cdn.glitch.com/d6e87e7b-c75e-4dfc-b54e-536cf1d3a920%2FttsMP3.com_VoiceText_2019-5-4_11_17_4.mp3?1556983042196`)
           lastDispatch.on('end', async () => {
             music.delQueue(db, title);
-            var nextSong = await music.nextSong(db);
             db.all(`SELECT * FROM queue`, function(err, rows) {
               if (err) throw err;
               if (rows !== "[]") {
                 var nextSong = rows[0]
                 var t = nextSong.title.replace(/&quot;/g, ``)
-                var cmd = `!play ${t}`
-                music.delQueue(db, nextSong.title);
+                var cmd = `!fp ${t}`
+                console.log(nextSong.title + '   -   ' + JSON.stringify(rows));
+                music.delQueue(db, t);
                 setTimeout(runCommand, 1000, client, cmd)
               }
               });
