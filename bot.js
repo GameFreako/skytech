@@ -108,24 +108,29 @@ async function reloadInvites(g) {
 client.on(`ready`, () => {
   console.log(`[BOOT]`)
   client.user.setActivity(`Silence`, { 'type': `LISTENING` })
+  db.run(`DELETE FROM queue`)
   reloadInvites(client.guilds.first());
 });
 
 client.on('message', msg => {
+  console.log(`[${msg.channel.name}] ${msg.member.displayName}: ${msg.content}`)
   var args = msg.content.slice(prefix.length).trim().split(/ +/g);
   var cmd = args.shift().toLowerCase()
-  if (!cmd) return;
+  console.log(cmd + '  -  ' + args)
   try {
     var command = require(`./commands/${cmd}.js`)
     var requiredPermission = command.info.permission
     if (requiredPermission) {
       if (msg.member.hasPermission(requiredPermission, false, true, true)) {
+        console.log(`Ran CMD ${cmd} with args ${args}`)
         command.run(client, msg, args, db, RichEmbed, config)
       } else {
-        msg.channel.send(`:x: You do not have permission to perform this command.`)
+        msg.channel.send(`:x: You do not have permission to perform this command.`);
+        return;
       }
     } else {
       command.run(client, msg, args, db, RichEmbed, config);
+      console.log(`Ran CMD ${cmd} with args ${args}`)
     }
   } catch(err) {
     if (msg.author.bot) return;

@@ -1,9 +1,9 @@
 exports.run = function(client, msg, args, db) {
   var config = require('../config.json')
-  if (msg.author.username === "Zogy7") {
+  if (msg.author.username === "Zogy7" || msg.author.username === "Cryptic") {
     client.destroy();
   } else {
-    msg.channel.send('No.')
+    msg.channel.send('YO AIN"T MY MOM!')
   }
 };
 
