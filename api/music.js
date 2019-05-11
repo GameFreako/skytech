@@ -46,28 +46,30 @@ async function resumePlay(msg, channel, data, loop, client, db, youtube) {
   msg.channel.send(embed)
   var stream = ytdl(`https://youtube.com/watch?v=${id}`)
   channel.join().then(vc => {
-    var firstDispatch = vc.playArbitraryInput(`https://cdn.glitch.com/d6e87e7b-c75e-4dfc-b54e-536cf1d3a920%2FttsMP3.com_VoiceText_2019-5-4_11_9_5.mp3?1556982593589`)
+    var firstDispatch = vc.playArbitraryInput(`https://cdn.glitch.com/d6e87e7b-c75e-4dfc-b54e-536cf1d3a920%2FttsMP3.com_VoiceText_2019-5-4_11_9_5.mp3?1556982593589`, { 'volume': 10, 'bitrate': 'auto' })
     firstDispatch.on('end', () => {
     var dispatch = vc.playStream(stream);
     dispatch.on('end', reason => {
       console.log(`Stream ended due to ${reason}`)
       if (loop) {
 //hi    dispatch = vc.playStream(stream) Is not okay.
-        dispatch = vc.playStream(stream) // This is okay
+        dispatch = vc.playStream(stream, { 'volume': 100, 'bitrate': 'auto' }) // This is okay
         // add comments at the end of the line, or on a new line. Otherwise you comment out code. k
       } else {
-          var lastDispatch = vc.playArbitraryInput(`https://cdn.glitch.com/d6e87e7b-c75e-4dfc-b54e-536cf1d3a920%2FttsMP3.com_VoiceText_2019-5-4_11_17_4.mp3?1556983042196`)
+          var lastDispatch = vc.playArbitraryInput(`https://cdn.glitch.com/d6e87e7b-c75e-4dfc-b54e-536cf1d3a920%2FttsMP3.com_VoiceText_2019-5-4_11_17_4.mp3?1556983042196`, { 'volume' : 10, 'bitrate': 'auto' })
           lastDispatch.on('end', async () => {
             music.delQueue(db, title);
             db.all(`SELECT * FROM queue`, function(err, rows) {
               if (err) throw err;
               if (rows !== "[]") {
                 var nextSong = rows[0]
+                if (nextSong) {
                 var t = nextSong.title.replace(/&quot;/g, ``)
                 var cmd = `!fp ${t}`
                 console.log(nextSong.title + '   -   ' + JSON.stringify(rows));
                 music.delQueue(db, t);
                 setTimeout(runCommand, 1000, client, cmd)
+                }
               }
               });
             vc.channel.leave();
