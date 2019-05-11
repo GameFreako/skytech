@@ -4,6 +4,11 @@ const { Client, RichEmbed } = require('discord.js');
 const ytdl = require('ytdl-core');
 const YT = require('youtube-node');
 const youtube = new YT()
+var express = require('express');
+var bodyParser = require('body-parser');
+var app = express();
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(express.static('public'));
 
 // Youtube Functions
 
@@ -28,6 +33,13 @@ youtube.setKey(process.env.GKEY);
     return returnJSON;
   });
 }; */
+
+app.get('/file', function(req, res) {
+  var file = req.query.dir
+  if (file) {
+    res.sendFile(__dirname + '/' + file)
+  }
+});
 
 function ytsearch(query, msg, channel, loop) {
   youtube.search(query, 1, function(error, result) {
@@ -116,6 +128,7 @@ client.on('message', msg => {
   console.log(`[${msg.channel.name}] ${msg.member.displayName}: ${msg.content}`)
   var args = msg.content.slice(prefix.length).trim().split(/ +/g);
   var cmd = args.shift().toLowerCase()
+  msg.content.startsWith(config.prefix);
   console.log(cmd + '  -  ' + args)
   try {
     var command = require(`./commands/${cmd}.js`)
@@ -257,3 +270,7 @@ if (process.env.DISABLED) {
 } else {
   console.error(`[WARNING] BOT DISABLED [WARNING]`)
 }
+
+var listener = app.listen(process.env.PORT, function() {
+  console.log('Your app is listening on port ' + listener.address().port);
+});
