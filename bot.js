@@ -128,6 +128,7 @@ client.on('message', msg => {
   console.log(`[${msg.channel.name}] ${msg.member.displayName}: ${msg.content}`)
   var args = msg.content.slice(prefix.length).trim().split(/ +/g);
   var cmd = args.shift().toLowerCase()
+  msg.content.startsWith(config.prefix);
   console.log(cmd + '  -  ' + args)
   try {
     var command = require(`./commands/${cmd}.js`)
