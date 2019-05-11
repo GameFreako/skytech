@@ -7,3 +7,9 @@ exports.run = function(client, msg, args, db, RichEmbed) {
   msg.member.removeRole(rr);
   msg.channel.send(`${msg.member.displayName} veriifed their account.`)
 };
+
+exports.info = {
+  'description': 'Verify your account',
+  'usage': '!verify',
+  'permission': ''
+}
