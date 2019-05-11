@@ -5,4 +5,5 @@ exports.run = function(client, msg, args, db, RichEmbed) {
   if (!rr) return;
   msg.member.addRole(ar);
   msg.member.removeRole(rr);
+  msg.channel.send(`${msg.member.displayName} veriifed their account.`)
 };
